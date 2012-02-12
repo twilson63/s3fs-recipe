@@ -1,0 +1,77 @@
+{
+  "maintainer": "Jack Russell Software Company",
+  "description": "Installs and configures s3fs for creating a file system to an s3 bucket",
+  "recommendations": {
+
+  },
+  "maintainer_email": "team@jackrussellsoftware.com",
+  "recipes": {
+    "s3fs": ""
+  },
+  "suggestions": {
+
+  },
+  "platforms": {
+    "ubuntu": [
+
+    ],
+    "debian": [
+
+    ]
+  },
+  "version": "0.0.5",
+  "name": "s3fs",
+  "conflicting": {
+
+  },
+  "attributes": {
+    "access_key": {
+      "default": "",
+      "type": "string",
+      "multiple_values": false,
+      "description": "amazon key",
+      "display_name": "AMAZON_ACCESS_KEY_ID",
+      "recipes": [
+
+      ],
+      "required": true
+    },
+    "secret_key": {
+      "default": "",
+      "type": "string",
+      "multiple_values": false,
+      "description": "amazon secret access key",
+      "display_name": "AMAZON_SECRET_ACCESS_KEY",
+      "recipes": [
+
+      ],
+      "required": true
+    
+    },
+    "s3fs\/bucket": {
+      "default": "",
+      "type": "string",
+      "multiple_values": false,
+      "description": "name of s3 bucket to map",
+      "display_name": "s3 Bucket",
+      "recipes": [
+
+      ],
+      "required": true
+    }
+    
+  },
+  "providing": {
+    "s3fs": [
+
+    ]
+  },
+  "license": "Apache 2.0",
+  "long_description": "",
+  "replacing": {
+
+  },
+  "dependencies": {
+
+  }
+}
