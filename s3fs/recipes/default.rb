@@ -54,5 +54,6 @@ mount "/mnt/#{ node[:s3][:bucket] }" do
   device "s3fs\##{ node[:s3][:bucket] }"
   fstype "fuse"
   options "use_cache=/tmp,use_rrs=1,allow_other"
+  not_if "mountpoint /mnt/#{ node[:s3][:bucket] } "
   action [:mount, :enable]
 end
