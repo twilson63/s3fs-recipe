@@ -35,9 +35,8 @@ bash "install s3fs" do
   ./configure --prefix=/usr
   make
   sudo make install
-  sudo mkdir -p /mnt/#{ node[:s3][:bucket] } 
-  sudo s3fs #{ node[:s3][:bucket] }  -o password_file=#{ node[:access_key] }:#{ node[:secret_key] } -o allow_other /mnt/#{ node[:s3][:bucket] } 
-
+  sudo mkdir -p /mnt/#{ node[:s3][:bucket] }
+  sudo bash -c 'export AWSACCESSKEYID=#{ node[:access_key] }; export AWSSECRETACCESSKEY=#{ node[:secret_key] }; s3fs #{ node[:s3][:bucket] } /mnt/#{ node[:s3][:bucket] } -o allow_other'
   EOH
 
   not_if { File.exists?("/usr/bin/s3fs") }
