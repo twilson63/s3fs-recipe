@@ -1,7 +1,7 @@
-maintainer       "Alberta Motor Association"
-maintainer_email "webmaster@ama.ab.ca"
-license          "Apache 2.0"
-description      "Mounts a S3 bucket as file system. Forked from https://github.com/twilson63/s3fs-recipe"
+maintainer       "Tom Wilson"
+maintainer_email "tom@jackhq.com"
+license          "MIT"
+description      "Mounts a S3 bucket as file system"
 version          "0.0.1"
 
 
