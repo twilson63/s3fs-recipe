@@ -1,4 +1,4 @@
-%w{ build-essential pkg-config libcurl4-openssl-dev libfuse-dev fuse-utils libfuse2 libxml2-dev mime-support }.each do |pkg|
+node[:s3fs][:packages].each do |pkg|
   package pkg
 end
 
@@ -15,11 +15,25 @@ bash "install fuse" do
   cd fuse-#{ node[:fuse][:version] }
   ./configure --prefix=/usr
   make
-  sudo make install
+  make install
 
   EOH
 
   not_if { File.exists?("/usr/bin/fusermount") }
+end
+
+if %w{centos redhat}.include?(node["platform"])
+  template "/etc/ld.so.conf.d/s3fs.conf" do
+    source "s3fs.conf.erb"
+    owner "root"
+    group "root"
+    mode 0644
+  end
+
+  bash "ldconfig" do
+    code "ldconfig"
+    only_if { `ldconfig -v | grep fuse | wc -l` == 0 }
+  end
 end
 
 remote_file "/tmp/s3fs-#{ node[:s3fs][:version] }.tar.gz" do
@@ -30,11 +44,12 @@ end
 bash "install s3fs" do
   cwd "/tmp"
   code <<-EOH
+  export PKG_CONFIG_PATH=/usr/lib/pkgconfig:/usr/lib64/pkgconfig
   tar zxvf s3fs-#{ node[:s3fs][:version] }.tar.gz
   cd s3fs-#{ node[:s3fs][:version] }
   ./configure --prefix=/usr
   make
-  sudo make install
+  make install
   EOH
 
   not_if { File.exists?("/usr/bin/s3fs") }
