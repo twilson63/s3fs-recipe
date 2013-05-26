@@ -21,7 +21,7 @@
     "centos": ">= 6.0",
     "redhat": ">= 6.0"
   },
-  "version": "0.0.7",
+  "version": "1.0.0",
   "name": "s3fs",
   "conflicting": {
 

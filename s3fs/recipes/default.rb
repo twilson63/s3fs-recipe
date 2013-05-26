@@ -2,27 +2,30 @@ node[:s3fs][:packages].each do |pkg|
   package pkg
 end
 
-# install fuse
-remote_file "/tmp/fuse-#{ node[:fuse][:version] }.tar.gz" do
-  source "http://downloads.sourceforge.net/project/fuse/fuse-2.X/#{ node[:fuse][:version] }/fuse-#{ node[:fuse][:version] }.tar.gz"
-  mode 0644
+if not node[:s3fs][:packages].include?("fuse")
+  # install fuse
+  remote_file "/tmp/fuse-#{ node[:fuse][:version] }.tar.gz" do
+    source "http://downloads.sourceforge.net/project/fuse/fuse-2.X/#{ node[:fuse][:version] }/fuse-#{ node[:fuse][:version] }.tar.gz"
+    mode 0644
+  end
+
+  bash "install fuse" do
+    cwd "/tmp"
+    code <<-EOH
+    tar zxvf fuse-#{ node[:fuse][:version] }.tar.gz
+    cd fuse-#{ node[:fuse][:version] }
+    ./configure --prefix=/usr
+    make
+    make install
+
+    EOH
+
+    not_if { File.exists?("/usr/bin/fusermount") }
+  end
+
 end
 
-bash "install fuse" do
-  cwd "/tmp"
-  code <<-EOH
-  tar zxvf fuse-#{ node[:fuse][:version] }.tar.gz
-  cd fuse-#{ node[:fuse][:version] }
-  ./configure --prefix=/usr
-  make
-  make install
-
-  EOH
-
-  not_if { File.exists?("/usr/bin/fusermount") }
-end
-
-if %w{centos redhat}.include?(node["platform"])
+if %w{centos redhat amazon}.include?(node["platform"])
   template "/etc/ld.so.conf.d/s3fs.conf" do
     source "s3fs.conf.erb"
     owner "root"
