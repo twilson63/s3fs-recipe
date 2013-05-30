@@ -1,1 +1,4 @@
 s3fs.tar.gz
+.project
+*~
+*.swp
