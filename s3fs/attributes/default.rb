@@ -14,3 +14,6 @@ when "debian", "ubuntu"
 end
 default["s3fs"]["version"] = "1.69"
 default["s3fs"]["options"] = 'allow_other,use_cache=/tmp'
+
+default["s3fs"]["data_bag"]["name"] = "s3_keys"
+default["s3fs"]["data_bag"]["item"] = "deploy_key"

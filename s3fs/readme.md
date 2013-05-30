@@ -5,19 +5,30 @@ The purpose of this recipe is to create a s3fs driver for one of your amazon s3 
 
 ## Setup
 
-To use simply include the following nodes in your json string:
+To use, create a data bag per unique s3fs configuration. An example is included. Upload using:
 
-    # Amazon Keys
-    access_key: 
-    secret_key:
-    
-    # s3 bucket name
-    s3: { bucket: 'mybucket' }
+    knife data bag from file examples/s3_keys-deploy_key.json
+
+Then, for each node to run this configuration, use a role like this:
+
+    "run_list": [
+      "recipe[s3fs]",
+      ...
+    ],
+    "override_attributes": [
+      "s3fs": {
+        "data_bag": {
+          "name": "s3_keys",
+          "item": "deploy_key"
+        }
+      },
+      ...
+    }
     
 
 ## What does it do?
 
-It will install s3fs on your server, then it will create a folder that is named the same as your bucket in the /mnt directory.  Lastly it will create a s3fs mount to your s3 bucket specified in your configuration.    
+It will install s3fs on your server, then it will create folders in the /mnt directory named the same as each bucket listed in the data bag.  Lastly it will create a s3fs mount for each s3 bucket specified in your configuration.    
 
 ## Support
 
