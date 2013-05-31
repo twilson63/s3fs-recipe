@@ -1,0 +1,6 @@
+{
+  "id": "deploy_key",
+  "buckets": [ "bucket1", "bucket2" ],
+  "access_key_id": "ABCDEFGHIJKLMNOPQRST",
+  "secret_access_key": "abcdefghijklmnopqrstuvwxyz01234567890ABC"
+}
