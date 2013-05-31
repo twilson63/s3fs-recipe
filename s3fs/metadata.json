@@ -1,4 +1,4 @@
-
+{
   "maintainer": "Jack Russell Software Company",
   "description": "Installs and configures s3fs for creating a file system to an s3 bucket",
   "recommendations": {
