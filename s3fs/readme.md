@@ -32,4 +32,4 @@ It will install s3fs on your server, then it will create folders in the /mnt dir
 
 ## Support
 
-If you have any problems or change requests to this recipe please contact team@jackrussellsoftware.com
+If you have any problems or change requests to this recipe create an issue or submit a pull request on https://github.com/twilson63/s3fs-recipe
