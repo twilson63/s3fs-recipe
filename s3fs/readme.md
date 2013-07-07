@@ -1,6 +1,6 @@
 # Amazon s3fs Recipe
 
-The purpose of this recipe is to create a s3fs driver for one of your amazon s3 buckets.
+The purpose of this recipe is to create a s3fs driver for one of your amazon s3 buckets. The cookbook supports using an encrypted data bag to keep data safe in shared situations.
 
 
 ## Setup
@@ -25,6 +25,7 @@ Then, for each node to run this configuration, use a role like this:
       ...
     }
     
+If you'd like to use an encrypted data bag item, set the [:s3fs][:data_bag][:encrypted] to true (node.set[:s3fs][:data_bag][:encrypted] = true).
 
 ## What does it do?
 

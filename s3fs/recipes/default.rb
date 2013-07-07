@@ -62,6 +62,10 @@ end
 
 s3_bag = data_bag_item(node['s3fs']['data_bag']['name'], node['s3fs']['data_bag']['item'])
 
+if s3_bag['access_key_id'].include? 'encrypted_data'
+	s3_bag = Chef::EncryptedDataBagItem.load(node['s3fs']['data_bag']['name'], node['s3fs']['data_bag']['item'])
+end
+
 template "/etc/passwd-s3fs" do
   source "passwd-s3fs.erb"
   owner "root"
