@@ -25,11 +25,12 @@ Then, for each node to run this configuration, use a role like this:
       ...
     }
     
-If you'd like to use an encrypted data bag item, set the [:s3fs][:data_bag][:encrypted] to true (node.set[:s3fs][:data_bag][:encrypted] = true).
 
 ## What does it do?
 
-It will install s3fs on your server, then it will create folders in the /mnt directory named the same as each bucket listed in the data bag.  Lastly it will create a s3fs mount for each s3 bucket specified in your configuration.    
+It will install s3fs on your server, then it will create folders in the /mnt directory named the same as each bucket listed in the data bag.  Lastly it will create a s3fs mount for each s3 bucket specified in your configuration.
+
+The recipe will handle encrypted data bags, and uses the Chef::EncryptedDataBagItem.load with default decryption key file.
 
 ## Support
 
