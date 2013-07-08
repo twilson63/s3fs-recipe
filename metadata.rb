@@ -2,7 +2,7 @@ maintainer       "Tom Wilson"
 maintainer_email "tom@jackhq.com"
 license          "MIT"
 description      "Mounts a S3 bucket as file system"
-version          "1.0.1"
+version          "1.0.2"
 
 
 %w{ubuntu}.each do |os|
