@@ -1,6 +1,6 @@
 # Amazon s3fs Recipe
 
-The purpose of this recipe is to create a s3fs driver for one of your amazon s3 buckets.
+The purpose of this recipe is to create a s3fs driver for one of your amazon s3 buckets. The cookbook supports using an encrypted data bag to keep data safe in shared situations.
 
 
 ## Setup
@@ -28,7 +28,9 @@ Then, for each node to run this configuration, use a role like this:
 
 ## What does it do?
 
-It will install s3fs on your server, then it will create folders in the /mnt directory named the same as each bucket listed in the data bag.  Lastly it will create a s3fs mount for each s3 bucket specified in your configuration.    
+It will install s3fs on your server, then it will create folders in the /mnt directory named the same as each bucket listed in the data bag.  Lastly it will create a s3fs mount for each s3 bucket specified in your configuration.
+
+The recipe will handle encrypted data bags, and uses the Chef::EncryptedDataBagItem.load with default decryption key file.
 
 ## Support
 
