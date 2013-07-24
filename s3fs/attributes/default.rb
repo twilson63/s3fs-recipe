@@ -12,6 +12,9 @@ when "debian", "ubuntu"
   default["s3fs"]["packages"] = %w{build-essential pkg-config libcurl4-openssl-dev libfuse-dev fuse-utils libfuse2 libxml2-dev mime-support}
   default["fuse"]["version"] = "2.8.7"
 end
+
+default["s3fs"]["mount_root"] = '/mnt'
+default["s3fs"]["multi_user"] = false
 default["s3fs"]["version"] = "1.69"
 default["s3fs"]["options"] = 'allow_other,use_cache=/tmp'
 
