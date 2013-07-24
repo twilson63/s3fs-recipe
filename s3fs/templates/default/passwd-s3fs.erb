@@ -1,1 +1,3 @@
-<%= @s3_bag["access_key_id"] %>:<%= @s3_bag["secret_access_key"] %>
+<% @buckets.each do |bucket| %>
+<%= bucket[:name] %>:<%= bucket[:access_key] %>:<%= bucket[:secret_key] %>
+<% end %>
