@@ -2,7 +2,7 @@ maintainer        "Jack Russell Software Company"
 maintainer_email  "team@jackrussellsoftware.com"
 license           "Apache 2.0"
 description       "Installs and configures s3fs for creating a file system to an s3 bucket"
-version           "1.0.3"
+version           "1.1.0"
 
 recipe            "s3fs", "Installs and configures s3fs and mounts buckets"
 
