@@ -60,10 +60,34 @@ bash "install s3fs" do
   not_if { File.exists?("/usr/bin/s3fs") }
 end
 
-s3_bag = data_bag_item(node['s3fs']['data_bag']['name'], node['s3fs']['data_bag']['item'])
+def retrieve_s3_buckets(data_bag_item)
+  buckets = []
 
-if s3_bag['access_key_id'].include? 'encrypted_data'
-	s3_bag = Chef::EncryptedDataBagItem.load(node['s3fs']['data_bag']['name'], node['s3fs']['data_bag']['item'])
+  s3_bag = data_bag_item(node['s3fs']['data_bag']['name'], data_bag_item)
+
+  if s3_bag['access_key_id'].include? 'encrypted_data'
+    s3_bag = Chef::EncryptedDataBagItem.load(node['s3fs']['data_bag']['name'], data_bag_item)
+  end
+
+  s3_bag['buckets'].each do |bucket|
+    buckets << {
+      :name => bucket,
+      :path => File.join(node['s3fs']['mount_root'], bucket),
+      :access_key => s3_bag['access_key_id'],
+      :secret_key => s3_bag['secret_access_key']
+    }
+  end
+
+  buckets
+end
+
+if node['s3fs']['multi_user']
+  buckets = []
+  data_bag(node['s3fs']['data_bag']['name']).each do |item|
+    buckets += retrieve_s3_buckets(item)
+  end
+else
+  buckets = retrieve_s3_buckets(node['s3fs']['data_bag']['item'])
 end
 
 template "/etc/passwd-s3fs" do
@@ -71,27 +95,27 @@ template "/etc/passwd-s3fs" do
   owner "root"
   group "root"
   mode 0600
-  variables(:s3_bag => s3_bag)
+  variables(:buckets => buckets)
 end
 
-s3_bag['buckets'].each do |bucket|
-  directory "/mnt/#{ bucket}" do
+buckets.each do |bucket|
+  directory bucket[:path] do
     owner     "root"
     group     "root"
     mode      0777
     recursive true
     not_if do
-      File.exists?("/mnt/#{ bucket}")
+      File.exists?(bucket[:path])
     end
   end
 
-  mount "/mnt/#{ bucket}" do
-    device "s3fs##{ bucket}"
+  mount bucket[:path] do
+    device "s3fs##{bucket[:name]}"
     fstype "fuse"
     options node['s3fs']['options']
     dump 0
     pass 0
     action [:mount, :enable]
-    not_if "grep -qs '/mnt/#{ bucket} ' /proc/mounts" 
+    not_if "grep -qs '#{bucket[:path]} ' /proc/mounts"
   end
 end
