@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>S3fs-recipe by twilson63</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>S3fs-recipe</h1>
+        <h2>s3fs chef recipe</h2>
+        <a href="https://github.com/twilson63/s3fs-recipe" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a name="s3fs-cookbook" class="anchor" href="#s3fs-cookbook"><span class="octicon octicon-link"></span></a>s3fs cookbook</h1>
+
+<p>Install the <a href="https://code.google.com/p/s3fs/">S3FS driver</a> for one or more of your Amazon S3 buckets. The cookbook supports using an encrypted data bag to keep data safe in shared situations.</p>
+
+<p>The latest community release can be found at <a href="http://community.opscode.com/cookbooks/s3fs">http://community.opscode.com/cookbooks/s3fs</a>.</p>
+
+<h1>
+<a name="what-does-it-do" class="anchor" href="#what-does-it-do"><span class="octicon octicon-link"></span></a>What does it do?</h1>
+
+<p>It will install S3FS on your server, then it will create folders in the <code>/mnt</code> directory named the same as each bucket listed in the data bag.  Lastly, it will create an S3FS mount for each S3 bucket specified in your configuration.</p>
+
+<p>The recipe will handle encrypted data bags, and uses the <code>Chef::EncryptedDataBagItem.load</code> with default decryption key file.</p>
+
+<h1>
+<a name="requirements" class="anchor" href="#requirements"><span class="octicon octicon-link"></span></a>Requirements</h1>
+
+<h2>
+<a name="platform" class="anchor" href="#platform"><span class="octicon octicon-link"></span></a>Platform:</h2>
+
+<ul>
+<li>CentOS</li>
+<li>RHEL</li>
+<li>Ubuntu</li>
+<li>Debian</li>
+</ul><h1>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h1>
+
+<p>To use, create a data bag per each unique S3FS configuration. Here's an example:</p>
+
+<div class="highlight"><pre><span class="p">{</span>
+  <span class="nt">"id"</span><span class="p">:</span> <span class="s2">"deploy_key"</span><span class="p">,</span>
+  <span class="nt">"buckets"</span><span class="p">:</span> <span class="p">[</span> <span class="s2">"bucket1"</span><span class="p">,</span> <span class="s2">"bucket2"</span> <span class="p">],</span>
+  <span class="nt">"access_key_id"</span><span class="p">:</span> <span class="s2">"ABCDEFGHIJKLMNOPQRST"</span><span class="p">,</span>
+  <span class="nt">"secret_access_key"</span><span class="p">:</span> <span class="s2">"abcdefghijklmnopqrstuvwxyz01234567890ABC"</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Then, for each node to run this configuration, use a role like this:</p>
+
+<div class="highlight"><pre><span class="s2">"run_list"</span><span class="p">:</span> <span class="o">[</span>
+  <span class="s2">"recipe[s3fs]"</span><span class="p">,</span>
+  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+<span class="o">]</span><span class="p">,</span>
+<span class="s2">"override_attributes"</span><span class="p">:</span> <span class="o">[</span>
+  <span class="s2">"s3fs"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">"data_bag"</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"s3_keys"</span><span class="p">,</span>
+      <span class="s2">"item"</span><span class="p">:</span> <span class="s2">"deploy_key"</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>It is encouraged, however, to build a wrapper cookbook to specify the necessary attributes, rather than using roles, following the Berkshelf model.</p>
+
+<h2>
+<a name="multi-user-support" class="anchor" href="#multi-user-support"><span class="octicon octicon-link"></span></a>Multi User Support</h2>
+
+<p>If you have multiple AWS IAM users with different keys and multiple buckets that need mounted, you can use <code>node['s3fs']['multi_user']</code>. By setting this attribute to true, it will allow you to mount multiple buckets across as many user accounts (with different keys) as you want.</p>
+
+<p>Instead of using <code>node["s3fs"]["data_bag"]["item"]</code> to specify which data bag item to load, you create one or more data bags under <code>node["s3fs"]["data_bag"]["name"]</code> for each unique AWS IAM user you need to use. The data bag format is otherwise the same.</p>
+
+<p>And example of two separate data bag items in the same data bag:</p>
+
+<div class="highlight"><pre><span class="p">{</span>
+  <span class="nt">"id"</span><span class="p">:</span> <span class="s2">"s3fs_iam_1"</span><span class="p">,</span>
+  <span class="nt">"buckets"</span><span class="p">:</span> <span class="p">[</span> <span class="s2">"bucket1"</span><span class="p">,</span> <span class="s2">"bucket2"</span> <span class="p">],</span>
+  <span class="nt">"access_key_id"</span><span class="p">:</span> <span class="s2">"ABCDEFGHIJKLMNOPQRST"</span><span class="p">,</span>
+  <span class="nt">"secret_access_key"</span><span class="p">:</span> <span class="s2">"abcdefghijklmnopqrstuvwxyz01234567890ABC"</span>
+<span class="p">}</span>
+
+<span class="p">{</span>
+  <span class="nt">"id"</span><span class="p">:</span> <span class="s2">"s3fs_iam_2"</span><span class="p">,</span>
+  <span class="nt">"buckets"</span><span class="p">:</span> <span class="p">[</span> <span class="s2">"bucket1"</span><span class="p">,</span> <span class="s2">"bucket2"</span> <span class="p">],</span>
+  <span class="nt">"access_key_id"</span><span class="p">:</span> <span class="s2">"ABCDEFGHIJKLMNOPQRST"</span><span class="p">,</span>
+  <span class="nt">"secret_access_key"</span><span class="p">:</span> <span class="s2">"abcdefghijklmnopqrstuvwxyz01234567890ABC"</span>
+<span class="p">}</span>
+</pre></div>
+
+<h1>
+<a name="attributes" class="anchor" href="#attributes"><span class="octicon octicon-link"></span></a>Attributes</h1>
+
+<p>See <code>attributes/default.rb</code> for defaults generated per platform.</p>
+
+<ul>
+<li>
+<code>node["s3fs"]["packages"]</code> - Set of packages needed to install S3FS</li>
+<li>
+<code>node["fuse"]["version"]</code> - The version of FUSE to install</li>
+<li>
+<code>node["s3fs"]["version"]</code> - The version of S3FS to install</li>
+<li>
+<code>node["s3fs"]["mount_root"]</code> - The root path for any mounted S3 buckets</li>
+<li>
+<code>node["s3fs"]["multi_user"]</code> - Enable multi-user support</li>
+<li>
+<code>node["s3fs"]["options"]</code> - Options to set when mounting a bucket to the filesystem</li>
+<li>
+<code>node["s3fs"]["data_bag"]["name"]</code> - The name of the data bag that contains an item with the buckets to mount &amp; necessary AWS credentials</li>
+<li>
+<code>node["s3fs"]["data_bag"]["item"]</code> - The name of the data bag item that contains the buckets to mount &amp; necessary AWS credentials</li>
+</ul><h1>
+<a name="recipes" class="anchor" href="#recipes"><span class="octicon octicon-link"></span></a>Recipes</h1>
+
+<h2>
+<a name="default" class="anchor" href="#default"><span class="octicon octicon-link"></span></a>default</h2>
+
+<p>The default recipe installs a set of packages necessary to build S3FS from source, installs FUSE, then builds and installs S3FS.</p>
+
+<p>It then configures and mounts one of more S3 buckets, specified in a data bag's item or items, with the associated AWS credentials.</p>
+
+<h1>
+<a name="author" class="anchor" href="#author"><span class="octicon octicon-link"></span></a>Author</h1>
+
+<p>Author:: Tom Wilson <a href="mailto:tom@jackhq.com">tom@jackhq.com</a></p>
+
+<p>Copyright:: 2011 Tom Wilson</p>
+
+<p>see LICENSE</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/twilson63/s3fs-recipe/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/twilson63/s3fs-recipe/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/twilson63/s3fs-recipe"></a> is maintained by <a href="https://github.com/twilson63">twilson63</a>.</p>
+
+          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
