@@ -1,4 +1,15 @@
-s3fs.tar.gz
-.project
+.vagrant
+Berksfile.lock
 *~
-*.swp
+*#
+.#*
+\#*#
+.*.sw[a-z]
+*.un~
+/cookbooks
+
+# Bundler
+Gemfile.lock
+bin/*
+.bundle/*
+
