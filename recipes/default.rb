@@ -84,7 +84,7 @@ def retrieve_s3_buckets(data_bag_item)
 
   s3_bag = data_bag_item(node['s3fs']['data_bag']['name'], data_bag_item)
 
-  if s3_bag['access_key_id'].include? 'encrypted_data'
+  if s3_bag['access_key_id'].include? 'encrypted_data' || s3_bag['access_key_id'].is_a?(Chef::EncryptedDataBagItem)
     s3_bag = Chef::EncryptedDataBagItem.load(node['s3fs']['data_bag']['name'], data_bag_item)
   end
 
