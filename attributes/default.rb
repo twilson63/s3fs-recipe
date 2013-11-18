@@ -4,6 +4,8 @@ when "centos", "redhat"
   case node["platform_version"].to_i
   when 6
     default["fuse"]["version"] = "2.9.1"
+  when 5
+    default["fuse"]["version"] = "2.8.5"
   end
 when "amazon"
   default["s3fs"]["packages"] = %w{gcc libstdc++-devel gcc-c++ curl-devel libxml2-devel openssl-devel mailcap make fuse fuse-devel}
