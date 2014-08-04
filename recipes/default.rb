@@ -79,21 +79,15 @@ bash "install s3fs" do
   not_if { File.exists?("/usr/bin/s3fs") }
 end
 
-def retrieve_s3_buckets(data_bag_item)
+def retrieve_s3_buckets(s3_data)
   buckets = []
 
-  s3_bag = data_bag_item(node['s3fs']['data_bag']['name'], data_bag_item)
-
-  if s3_bag['access_key_id'].include? 'encrypted_data' || s3_bag['access_key_id'].is_a?(Chef::EncryptedDataBagItem)
-    s3_bag = Chef::EncryptedDataBagItem.load(node['s3fs']['data_bag']['name'], data_bag_item)
-  end
-
-  s3_bag['buckets'].each do |bucket|
+  s3_data['buckets'].each do |bucket|
     buckets << {
       :name => bucket,
       :path => File.join(node['s3fs']['mount_root'], bucket),
-      :access_key => s3_bag['access_key_id'],
-      :secret_key => s3_bag['secret_access_key']
+      :access_key => s3_data['access_key_id'],
+      :secret_key => s3_data['secret_access_key']
     }
   end
 
@@ -102,11 +96,11 @@ end
 
 if node['s3fs']['multi_user']
   buckets = []
-  data_bag(node['s3fs']['data_bag']['name']).each do |item|
+  node['s3fs']['data'].each do |item|
     buckets += retrieve_s3_buckets(item)
   end
 else
-  buckets = retrieve_s3_buckets(node['s3fs']['data_bag']['item'])
+  buckets = retrieve_s3_buckets(node['s3fs']['data'])
 end
 
 template "/etc/passwd-s3fs" do
