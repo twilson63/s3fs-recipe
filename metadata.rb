@@ -6,8 +6,6 @@ description      'Mount one or more S3 buckets to the filesystem.'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          '2.0.1'
 
-depends          'git'
-
 recipe           's3fs', 'Installs and configures S3FS and mounts buckets'
 
 supports         'centos', '>= 6.0'
