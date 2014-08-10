@@ -4,7 +4,7 @@ maintainer_email 'team@jackrussellsoftware.com'
 license          'Apache 2.0'
 description      'Mount one or more S3 buckets to the filesystem.'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '2.0.1'
+version          '2.0.2'
 
 recipe           's3fs', 'Installs and configures S3FS and mounts buckets'
 
