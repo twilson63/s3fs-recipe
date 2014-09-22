@@ -31,14 +31,13 @@ if not node['s3fs']['packages'].include?("fuse")
 
   bash "install fuse" do
     cwd Chef::Config[:file_cache_path]
-    code <<-EOH
-    tar zxvf fuse-#{ node['fuse']['version'] }.tar.gz
-    cd fuse-#{ node['fuse']['version'] }
-    ./configure --prefix=/usr
-    make
-    make install
-
-    EOH
+    code "
+      tar zxvf fuse-#{ node['fuse']['version'] }.tar.gz
+      cd fuse-#{ node['fuse']['version'] }
+      ./configure --prefix=/usr
+      make
+      make install
+    "
 
     not_if { File.exists?("/usr/bin/fusermount") }
   end
@@ -67,14 +66,14 @@ end
 
 bash "install s3fs" do
   cwd Chef::Config[:file_cache_path]
-  code <<-EOH
-  export PKG_CONFIG_PATH=/usr/lib/pkgconfig:/usr/lib64/pkgconfig
-  tar zxvf s3fs-#{ node['s3fs']['version'] }.tar.gz
-  cd s3fs-#{ node['s3fs']['version'] }
-  ./configure --prefix=/usr
-  make
-  make install
-  EOH
+  code "
+    export PKG_CONFIG_PATH=/usr/lib/pkgconfig:/usr/lib64/pkgconfig
+    tar zxvf s3fs-#{ node['s3fs']['version'] }.tar.gz
+    cd s3fs-#{ node['s3fs']['version'] }
+    ./configure --prefix=/usr
+    make
+    make install
+  "
 
   not_if { File.exists?("/usr/bin/s3fs") }
 end
