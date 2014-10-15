@@ -83,15 +83,34 @@ def retrieve_s3_buckets(s3_data)
   buckets = []
 
   s3_data['buckets'].each do |bucket|
+    bucket = Bucket.new(bucket, node)
     buckets << {
-      :name => bucket,
-      :path => File.join(node['s3fs']['mount_root'], bucket),
+      :name => bucket.name,
+      :path => bucket.path,
       :access_key => s3_data['access_key_id'],
       :secret_key => s3_data['secret_access_key']
     }
   end
 
   buckets
+end
+
+class Bucket
+  attr_reader :name
+  attr_reader :path
+
+  def initialize bucket, node
+    if bucket.is_a? String
+      @name = bucket
+      @path = File.join(node['s3fs']['mount_root'], @name)
+    elsif bucket.is_a? Hash
+      @name = bucket['name']
+      @path = bucket['path']
+    else
+      @name = ""
+      @path = ""
+    end
+  end
 end
 
 if node['s3fs']['multi_user']
