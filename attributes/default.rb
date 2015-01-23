@@ -14,7 +14,7 @@ when "debian", "ubuntu"
   default["s3fs"]["packages"] = %w{build-essential pkg-config libcurl4-openssl-dev libfuse-dev fuse-utils libfuse2 libxml2-dev mime-support}
   default["fuse"]["version"] = "2.8.7"
   case node["platform_version"].to_i
-  when 14.04
+  when 14
     default["s3fs"]["packages"] = %w{build-essential pkg-config libcurl4-openssl-dev libfuse-dev fuse-emulator-utils libfuse2 libxml2-dev mime-support}
   end
 end
