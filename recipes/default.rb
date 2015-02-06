@@ -91,8 +91,8 @@ def retrieve_s3_buckets(s3_data)
     buckets << {
       :name => bucket.name,
       :path => bucket.path,
-      :access_key => s3_data['access_key_id'],
-      :secret_key => s3_data['secret_access_key']
+      :access_key => '',
+      :secret_key => ''
     }
   end
 
