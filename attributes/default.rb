@@ -24,6 +24,8 @@ default["s3fs"]["multi_user"] = false
 default["s3fs"]["version"] = "1.69"
 default["s3fs"]["options"] = 'allow_other,use_cache=/tmp'
 
+default["s3fs"]["data_from_bag"] = false
+
 default["s3fs"]["data"] = {
   "buckets" => [],
   "access_key_id" => "",
