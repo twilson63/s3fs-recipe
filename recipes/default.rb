@@ -21,6 +21,8 @@ node['s3fs']['packages'].each do |pkg|
   package pkg
 end
 
+if node['s3fs']['build_from_source'] == true
+
 if not node['s3fs']['packages'].include?("fuse")
   # install fuse
   remote_file "#{Chef::Config[:file_cache_path]}/fuse-#{ node['fuse']['version'] }.tar.gz" do
@@ -78,6 +80,9 @@ bash "install s3fs" do
   not_if { File.exists?("/usr/bin/s3fs") }
 end
 
+end
+
+
 def retrieve_s3_buckets(s3_data)
   buckets = []
 
@@ -86,8 +91,8 @@ def retrieve_s3_buckets(s3_data)
     buckets << {
       :name => bucket.name,
       :path => bucket.path,
-      :access_key => s3_data['access_key_id'],
-      :secret_key => s3_data['secret_access_key']
+      :access_key => '',
+      :secret_key => ''
     }
   end
 

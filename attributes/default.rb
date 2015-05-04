@@ -1,4 +1,12 @@
+default["s3fs"]["build_from_source"] = true
+
 case node["platform"]
+when "opensuse"
+  case node["platform_version"].to_f
+  when 13.1
+  	default["s3fs"]["packages"] = %w{s3fs} #available in package manager on opensuse 13.1 and fuse is already install 
+  end
+  default["fuse"]["version"] = "2.9.3"
 when "centos", "redhat"
   default["s3fs"]["packages"] = %w{gcc libstdc++-devel gcc-c++ curl-devel libxml2-devel openssl-devel mailcap make}
   case node["platform_version"].to_i
@@ -25,7 +33,5 @@ default["s3fs"]["version"] = "1.69"
 default["s3fs"]["options"] = 'allow_other,use_cache=/tmp'
 
 default["s3fs"]["data"] = {
-  "buckets" => [],
-  "access_key_id" => "",
-  "secret_access_key" => "",
+  "buckets" => []
 }
