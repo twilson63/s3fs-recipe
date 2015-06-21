@@ -151,7 +151,7 @@ buckets.each do |bucket|
     options node['s3fs']['options']
     dump 0
     pass 0
-    action [:enable, :mount]
+    action [:mount, :enable]
     not_if "grep -qs '#{bucket[:path]} ' /proc/mounts"
   end
 end
