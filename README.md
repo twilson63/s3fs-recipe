@@ -86,8 +86,6 @@ See `attributes/default.rb` for defaults generated per platform.
 * `node["s3fs"]["mount_root"]` - The root path for any mounted S3 buckets
 * `node["s3fs"]["multi_user"]` - Enable multi-user support
 * `node["s3fs"]["options"]` - Options to set when mounting a bucket to the filesystem
-* `node["s3fs"]["data_bag"]["name"]` - The name of the data bag that contains an item with the buckets to mount & necessary AWS credentials
-* `node["s3fs"]["data_bag"]["item"]` - The name of the data bag item that contains the buckets to mount & necessary AWS credentials
 
 # Recipes
 

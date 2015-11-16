@@ -26,7 +26,7 @@ if node['s3fs']['build_from_source'] == true
 if not node['s3fs']['packages'].include?("fuse")
   # install fuse
   remote_file "#{Chef::Config[:file_cache_path]}/fuse-#{ node['fuse']['version'] }.tar.gz" do
-    source "http://downloads.sourceforge.net/project/fuse/fuse-2.X/#{ node['fuse']['version'] }/fuse-#{ node['fuse']['version'] }.tar.gz"
+    source "http://heanet.dl.sourceforge.net/project/fuse/fuse-2.X/#{ node['fuse']['version'] }/fuse-#{ node['fuse']['version'] }.tar.gz"
     mode 0644
     action :create_if_missing
   end
@@ -80,9 +80,6 @@ bash "install s3fs" do
   not_if { File.exists?("/usr/bin/s3fs") }
 end
 
-end
-
-
 def retrieve_s3_buckets(s3_data)
   buckets = []
 
@@ -122,6 +119,13 @@ if node['s3fs']['multi_user']
   node['s3fs']['data'].each do |item|
     buckets += retrieve_s3_buckets(item)
   end
+elsif node['s3fs']['data_from_bag']
+  s3_bag = data_bag_item(node['s3fs']['data_bag']['name'], node['s3fs']['data_bag']['item'])
+  if s3_bag['access_key_id'].include? 'encrypted_data'
+    s3_bag = Chef::EncryptedDataBagItem.load(node['s3fs']['data_bag']['name'], node['s3fs']['data_bag']['item'])
+  end
+
+  buckets = retrieve_s3_buckets({"buckets" => s3_bag['buckets'], "access_key_id" => s3_bag['access_key_id'], "secret_access_key" => s3_bag['secret_access_key']})
 else
   buckets = retrieve_s3_buckets(node['s3fs']['data'])
 end
