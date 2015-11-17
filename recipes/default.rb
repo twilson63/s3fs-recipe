@@ -72,6 +72,7 @@ bash "install s3fs" do
     export PKG_CONFIG_PATH=/usr/lib/pkgconfig:/usr/lib64/pkgconfig
     tar zxvf s3fs-#{ node['s3fs']['version'] }.tar.gz
     cd s3fs-#{ node['s3fs']['version'] }
+    ./autogen.sh
     ./configure --prefix=/usr
     make
     make install
