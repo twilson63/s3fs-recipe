@@ -80,6 +80,8 @@ bash "install s3fs" do
   not_if { File.exists?("/usr/bin/s3fs") }
 end
 
+end
+
 def retrieve_s3_buckets(s3_data)
   buckets = []
 
