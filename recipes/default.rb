@@ -61,7 +61,7 @@ if %w{centos redhat amazon}.include?(node['platform'])
 end
 
 remote_file "#{Chef::Config[:file_cache_path]}/s3fs-#{ node['s3fs']['version'] }.tar.gz" do
-  source "http://s3fs.googlecode.com/files/s3fs-#{ node['s3fs']['version'] }.tar.gz"
+  source "https://github.com/s3fs-fuse/s3fs-fuse/archive/#{ node['s3fs']['version'] }.tar.gz"
   mode 0644
   action :create_if_missing
 end
