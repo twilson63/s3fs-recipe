@@ -25,8 +25,8 @@ attribute 's3fs/packages',
 
 attribute 's3fs/version',
   :display_name => 's3fs version',
-  :description => 'Version of s3fs to install (github version tag)',
-  :default => 'v1.79'
+  :description => 'Version of s3fs to install (github release version)',
+  :default => '1.79'
 
 attribute 's3fs/options',
   :display_name => 'S3FS options',
