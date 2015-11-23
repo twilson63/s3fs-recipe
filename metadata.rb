@@ -4,7 +4,7 @@ maintainer_email 'team@jackrussellsoftware.com'
 license          'Apache 2.0'
 description      'Mount one or more S3 buckets to the filesystem.'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '2.0.4'
+version          '3.0.0'
 
 recipe           's3fs', 'Installs and configures S3FS and mounts buckets'
 
@@ -25,8 +25,8 @@ attribute 's3fs/packages',
 
 attribute 's3fs/version',
   :display_name => 's3fs version',
-  :description => 'Version of s3fs to install',
-  :default => '1.69'
+  :description => 'Version of s3fs to install (github release version)',
+  :default => '1.79'
 
 attribute 's3fs/options',
   :display_name => 'S3FS options',

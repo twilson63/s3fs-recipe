@@ -60,8 +60,8 @@ if %w{centos redhat amazon}.include?(node['platform'])
   end
 end
 
-remote_file "#{Chef::Config[:file_cache_path]}/s3fs-#{ node['s3fs']['version'] }.tar.gz" do
-  source "http://s3fs.googlecode.com/files/s3fs-#{ node['s3fs']['version'] }.tar.gz"
+remote_file "#{Chef::Config[:file_cache_path]}/s3fs-fuse-#{ node['s3fs']['version'] }.tar.gz" do
+  source "https://github.com/s3fs-fuse/s3fs-fuse/archive/v#{ node['s3fs']['version'] }.tar.gz"
   mode 0644
   action :create_if_missing
 end
@@ -70,8 +70,9 @@ bash "install s3fs" do
   cwd Chef::Config[:file_cache_path]
   code "
     export PKG_CONFIG_PATH=/usr/lib/pkgconfig:/usr/lib64/pkgconfig
-    tar zxvf s3fs-#{ node['s3fs']['version'] }.tar.gz
-    cd s3fs-#{ node['s3fs']['version'] }
+    tar zxvf s3fs-fuse-#{ node['s3fs']['version'] }.tar.gz
+    cd s3fs-fuse-#{ node['s3fs']['version'] }
+    ./autogen.sh
     ./configure --prefix=/usr
     make
     make install
@@ -90,8 +91,8 @@ def retrieve_s3_buckets(s3_data)
     buckets << {
       :name => bucket.name,
       :path => bucket.path,
-      :access_key => '',
-      :secret_key => ''
+      :access_key => ((s3_data.include?('access_key_id')) ? s3_data['access_key_id'] : ''),
+      :secret_key => ((s3_data.include?('secret_access_key')) ? s3_data['secret_access_key'] : '')
     }
   end
 
