@@ -158,7 +158,17 @@ buckets.each do |bucket|
     options node['s3fs']['options']
     dump 0
     pass 0
-    action [:mount, :enable]
+    action :mount
     not_if "grep -qs '#{bucket[:path]} ' /proc/mounts"
+  end
+
+  mount bucket[:path] do
+    device "s3fs##{bucket[:name]}"
+    fstype "fuse"
+    options node['s3fs']['options']
+    dump 0
+    pass 0
+    action :enable
+    not_if "grep -qs '#{bucket[:path]} ' /etc/fstab"
   end
 end
