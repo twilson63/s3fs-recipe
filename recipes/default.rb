@@ -33,7 +33,7 @@ if not node['s3fs']['packages'].include?("fuse")
   Chef::Log.info "fuse_path:#{@fuse_version_string}"
   # install fuse
   remote_file "#{Chef::Config[:file_cache_path]}/fuse-#{ node['fuse']['version'] }.tar.gz" do
-    source ::URI.join(node['s3fs']['fuse']['uri'],@fuse_version_string,"fuse-#{ node['fuse']['version'] }.tar.gz").to_s
+    source ::URI.join(node['s3fs']['fuse']['uri'],"#{@fuse_version_string}/fuse-#{ node['fuse']['version'] }.tar.gz").to_s
     mode 0644
     action :create_if_missing
   end
