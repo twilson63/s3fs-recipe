@@ -24,6 +24,7 @@ when "debian", "ubuntu"
   case node["platform_version"].to_i
   when 14
     default["s3fs"]["packages"] = %w{build-essential pkg-config libcurl4-openssl-dev libfuse-dev fuse-emulator-utils libfuse2 libxml2-dev mime-support}
+    default["fuse"]["version"] = "2.9.5"
   end
 end
 
@@ -37,3 +38,6 @@ default["s3fs"]["data_from_bag"] = false
 default["s3fs"]["data"] = {
   "buckets" => []
 }
+
+default["s3fs"]["fuse"]["uri"] = 'https://github.com/libfuse/libfuse/releases/download/'
+default["s3fs"]["uri"] = 'https://github.com/s3fs-fuse/s3fs-fuse/archive/'

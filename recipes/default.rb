@@ -16,6 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+require 'uri'
 
 node['s3fs']['packages'].each do |pkg|
   package pkg
@@ -26,7 +27,7 @@ if node['s3fs']['build_from_source'] == true
 if not node['s3fs']['packages'].include?("fuse")
   # install fuse
   remote_file "#{Chef::Config[:file_cache_path]}/fuse-#{ node['fuse']['version'] }.tar.gz" do
-    source "http://heanet.dl.sourceforge.net/project/fuse/fuse-2.X/#{ node['fuse']['version'] }/fuse-#{ node['fuse']['version'] }.tar.gz"
+    source ::URI.join(node['s3fs']['fuse']['uri'],"fuse_#{node['fuse']['version'].gsub!('.','_')}","fuse-#{ node['fuse']['version'] }.tar.gz").to_s
     mode 0644
     action :create_if_missing
   end
@@ -61,7 +62,7 @@ if %w{centos redhat amazon}.include?(node['platform'])
 end
 
 remote_file "#{Chef::Config[:file_cache_path]}/s3fs-fuse-#{ node['s3fs']['version'] }.tar.gz" do
-  source "https://github.com/s3fs-fuse/s3fs-fuse/archive/v#{ node['s3fs']['version'] }.tar.gz"
+  source ::URI.join(node['s3fs']['uri'],"c#{ node['s3fs']['version'] }.tar.gz").to_s
   mode 0644
   action :create_if_missing
 end
