@@ -25,17 +25,14 @@ end
 if node['s3fs']['build_from_source'] == true
 
 if not node['s3fs']['packages'].include?("fuse")
-  def get_version(v)
-    if v.gsub('.','').to_i >= 295 then
-      v1 = "fuse_#{v.gsub!('.','_')}"
-    else
-      v1 = "fuse_2_9_4"
-    end
-    return v1
+  if node['fuse']['version'].gsub('.','').to_i >= 295 then
+      fuse_version_string = "fuse_#{v.gsub!('.','_')}"
+  else
+      fuse_version_string = "fuse_2_9_4"
   end
   # install fuse
   remote_file "#{Chef::Config[:file_cache_path]}/fuse-#{ node['fuse']['version'] }.tar.gz" do
-    source ::URI.join(node['s3fs']['fuse']['uri'],get_version(node['fuse']['version']),"fuse-#{ node['fuse']['version'] }.tar.gz").to_s
+    source ::URI.join(node['s3fs']['fuse']['uri'],fuse_version_string,"fuse-#{ node['fuse']['version'] }.tar.gz").to_s
     mode 0644
     action :create_if_missing
   end
