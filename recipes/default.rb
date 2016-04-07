@@ -18,6 +18,10 @@
 #
 require 'uri'
 
+class Chef::Recipe
+  include S3FS::Helper
+end
+
 node['s3fs']['packages'].each do |pkg|
   package pkg
 end
@@ -33,7 +37,7 @@ if not node['s3fs']['packages'].include?("fuse")
   Chef::Log.info "fuse_path:#{@fuse_version_string}"
   # install fuse
   remote_file "#{Chef::Config[:file_cache_path]}/fuse-#{ node['fuse']['version'] }.tar.gz" do
-    source ::URI.join(node['s3fs']['fuse']['uri'],"#{@fuse_version_string}/fuse-#{ node['fuse']['version'] }.tar.gz").to_s
+    source uri_join(node['s3fs']['fuse']['uri'],"#{@fuse_version_string}/fuse-#{ node['fuse']['version'] }.tar.gz").to_s
     mode 0644
     action :create_if_missing
   end
@@ -68,7 +72,7 @@ if %w{centos redhat amazon}.include?(node['platform'])
 end
 
 remote_file "#{Chef::Config[:file_cache_path]}/s3fs-fuse-#{ node['s3fs']['version'] }.tar.gz" do
-  source ::URI.join(node['s3fs']['uri'],"v#{ node['s3fs']['version'] }.tar.gz").to_s
+  source uri_join(node['s3fs']['uri'],"v#{ node['s3fs']['version'] }.tar.gz").to_s
   mode 0644
   action :create_if_missing
 end
