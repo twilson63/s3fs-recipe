@@ -20,6 +20,7 @@
 class Chef::Recipe
   include S3FS::Helper
 end
+Chef::Resource::RemoteFile.send(:include, S3FS::Helper)
 
 node['s3fs']['packages'].each do |pkg|
   package pkg
