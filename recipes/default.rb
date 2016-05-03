@@ -17,6 +17,11 @@
 # limitations under the License.
 #
 
+class Chef::Recipe
+  include S3FS::Helper
+end
+Chef::Resource::RemoteFile.send(:include, S3FS::Helper)
+
 node['s3fs']['packages'].each do |pkg|
   package pkg
 end
@@ -26,7 +31,7 @@ if node['s3fs']['build_from_source'] == true
 if not node['s3fs']['packages'].include?("fuse")
   # install fuse
   remote_file "#{Chef::Config[:file_cache_path]}/fuse-#{ node['fuse']['version'] }.tar.gz" do
-    source "http://heanet.dl.sourceforge.net/project/fuse/fuse-2.X/#{ node['fuse']['version'] }/fuse-#{ node['fuse']['version'] }.tar.gz"
+    source uri_join(node['s3fs']['fuse']['uri'],"#{get_release_path(node['fuse']['version'])}/fuse-#{ node['fuse']['version'] }.tar.gz").to_s
     mode 0644
     action :create_if_missing
   end
@@ -61,7 +66,7 @@ if %w{centos redhat amazon}.include?(node['platform'])
 end
 
 remote_file "#{Chef::Config[:file_cache_path]}/s3fs-fuse-#{ node['s3fs']['version'] }.tar.gz" do
-  source "https://github.com/s3fs-fuse/s3fs-fuse/archive/v#{ node['s3fs']['version'] }.tar.gz"
+  source uri_join(node['s3fs']['uri'],"v#{ node['s3fs']['version'] }.tar.gz").to_s
   mode 0644
   action :create_if_missing
 end
@@ -91,8 +96,8 @@ def retrieve_s3_buckets(s3_data)
     buckets << {
       :name => bucket.name,
       :path => bucket.path,
-      :access_key => ((s3_data.include?('access_key_id')) ? s3_data['access_key_id'] : ''),
-      :secret_key => ((s3_data.include?('secret_access_key')) ? s3_data['secret_access_key'] : '')
+      :access_key_id => ((s3_data.include?('access_key_id')) ? s3_data['access_key_id'] : ''),
+      :secret_access_key => ((s3_data.include?('secret_access_key')) ? s3_data['secret_access_key'] : '')
     }
   end
 
