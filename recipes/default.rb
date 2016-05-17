@@ -138,12 +138,14 @@ else
   buckets = retrieve_s3_buckets(node['s3fs']['data'])
 end
 
-template "/etc/passwd-s3fs" do
-  source "passwd-s3fs.erb"
-  owner "root"
-  group "root"
-  mode 0600
-  variables(:buckets => buckets)
+unless node['s3fs']['skip_passwd']
+  template "/etc/passwd-s3fs" do
+    source "passwd-s3fs.erb"
+    owner "root"
+    group "root"
+    mode 0600
+    variables(:buckets => buckets)
+  end
 end
 
 buckets.each do |bucket|
