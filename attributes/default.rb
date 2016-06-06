@@ -41,3 +41,4 @@ default["s3fs"]["data"] = {
 
 default["s3fs"]["fuse"]["uri"] = 'https://github.com/libfuse/libfuse/releases/download/'
 default["s3fs"]["uri"] = 'https://github.com/s3fs-fuse/s3fs-fuse/archive/'
+default["s3fs"]["skip_passwd"] = false
