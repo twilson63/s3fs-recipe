@@ -17,8 +17,12 @@
 # limitations under the License.
 #
 
-class Chef::Recipe
-  include S3FS::Helper
+# Define class to include the helper.
+class Recipe
+  # Simply includes S3FS Helper module.
+  class Chef
+    include S3FS::Helper
+  end
 end
 Chef::Resource::RemoteFile.send(:include, S3FS::Helper)
 
@@ -88,7 +92,7 @@ if node['s3fs']['build_from_source']
 
 end
 
-def retrieve_s3_buckets(s3_data)
+def retrieve_s3_buckets(s3_data) # rubocop:disable Metrics/MethodLength
   buckets = []
 
   s3_data['buckets'].each do |bucket|
@@ -104,6 +108,7 @@ def retrieve_s3_buckets(s3_data)
   buckets
 end
 
+# A simple data holder class for S3 Buckets
 class Bucket
   attr_reader :name
   attr_reader :path
@@ -133,7 +138,11 @@ elsif node['s3fs']['data_from_bag']
     s3_bag = Chef::EncryptedDataBagItem.load(node['s3fs']['data_bag']['name'], node['s3fs']['data_bag']['item'])
   end
 
-  buckets = retrieve_s3_buckets('buckets' => s3_bag['buckets'], 'access_key_id' => s3_bag['access_key_id'], 'secret_access_key' => s3_bag['secret_access_key'])
+  buckets = retrieve_s3_buckets(
+    'buckets' => s3_bag['buckets'],
+    'access_key_id' => s3_bag['access_key_id'],
+    'secret_access_key' => s3_bag['secret_access_key']
+  )
 else
   buckets = retrieve_s3_buckets(node['s3fs']['data'])
 end

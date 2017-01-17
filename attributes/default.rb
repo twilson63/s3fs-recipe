@@ -23,7 +23,17 @@ when 'debian', 'ubuntu'
   default['fuse']['version'] = '2.8.7'
   case node['platform_version'].to_i
   when 14
-    default['s3fs']['packages'] = %w(build-essential pkg-config libcurl4-openssl-dev libfuse-dev fuse-emulator-utils libfuse2 libxml2-dev mime-support automake)
+    default['s3fs']['packages'] = %w(
+      build-essential
+      pkg-config
+      libcurl4-openssl-dev
+      libfuse-dev
+      fuse-emulator-utils
+      libfuse2
+      libxml2-dev
+      mime-support
+      automake
+    )
     default['fuse']['version'] = '2.9.5'
   end
 end

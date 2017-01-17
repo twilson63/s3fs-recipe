@@ -1,4 +1,6 @@
+# Define S3FS module, to give us a good namespace.
 module S3FS
+  # Utility module with some helper functions.
   module Helper
     require 'uri'
 
