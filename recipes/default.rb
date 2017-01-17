@@ -26,9 +26,9 @@ node['s3fs']['packages'].each do |pkg|
   package pkg
 end
 
-if node['s3fs']['build_from_source'] == true
+if node['s3fs']['build_from_source']
 
-  if not node['s3fs']['packages'].include?("fuse")
+  unless node['s3fs']['packages'].include?("fuse")
     # install fuse
     remote_file "#{Chef::Config[:file_cache_path]}/fuse-#{ node['fuse']['version'] }.tar.gz" do
       source uri_join(node['s3fs']['fuse']['uri'], "#{get_release_path(node['fuse']['version'])}/fuse-#{ node['fuse']['version'] }.tar.gz").to_s
