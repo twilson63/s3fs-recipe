@@ -35,6 +35,8 @@ when 'debian', 'ubuntu'
       automake
     )
     default['fuse']['version'] = '2.9.5'
+  when 16
+    default['s3fs']['packages'] = %w(build-essential pkg-config libcurl4-openssl-dev libfuse-dev libfuse2 libxml2-dev mime-support automake libssl-dev)
   end
 end
 
