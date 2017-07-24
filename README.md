@@ -86,6 +86,7 @@ See `attributes/default.rb` for defaults generated per platform.
 * `node["s3fs"]["mount_root"]` - The root path for any mounted S3 buckets
 * `node["s3fs"]["multi_user"]` - Enable multi-user support
 * `node["s3fs"]["options"]` - Options to set when mounting a bucket to the filesystem
+* `node["s3fs"]["skip_passwd"]` - Dont create a password file for key:secret (can be used in combination with `options="iam_role='aws_role_with_s3_permission'"` to mount through an IAM role instead)
 
 # Recipes
 
